@@ -6,6 +6,7 @@ using UnityEngine.AddressableAssets;
 public class SimpleLoadAndRelease : MonoBehaviour
 {
     public AssetReferenceGameObject[] goRefs;
+    public RefScriptableObject sc;
 
     private void Start()
     {
