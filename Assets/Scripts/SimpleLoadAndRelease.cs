@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SimpleLoadAndRelease : MonoBehaviour
 {
@@ -16,9 +17,11 @@ public class SimpleLoadAndRelease : MonoBehaviour
 
     private async void LoadAsync()
     {
+        List<AsyncOperationHandle<GameObject>> handles = new List<AsyncOperationHandle<GameObject>>();
         foreach (var goRef in goRefs)
         {
             var asyncOp = goRef.LoadAssetAsync();
+            handles.Add(asyncOp);
             var prefab = await asyncOp.Task;
             var go = Instantiate(prefab);
             var go2 = Instantiate(prefab);
@@ -27,8 +30,11 @@ public class SimpleLoadAndRelease : MonoBehaviour
             Destroy(go);
             Destroy(go2);
             Destroy(go3);
-            Addressables.Release(asyncOp);
         }
-
+        await Task.Delay(1000);
+        foreach (var handle in handles)
+        {
+            Addressables.Release(handle);
+        }
     }
 }
